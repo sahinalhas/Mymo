@@ -167,9 +167,10 @@ export default function Dashboard() {
               <motion.div 
                 key={asset.id}
                 whileTap={{ scale: 0.98 }}
-                className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 rounded-[1.5rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 transition-all duration-300 shadow-sm"
+                className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 rounded-[1.5rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 transition-all duration-300 shadow-sm relative overflow-hidden"
               >
-                <div className="flex items-center gap-4">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full translate-x-8 -translate-y-8 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+                <div className="flex items-center gap-4 relative z-10">
                   <div className={`w-12 h-12 ${asset.color} rounded-2xl flex items-center justify-center shadow-lg border border-white/10`}>
                     <span className="text-white font-black text-xs">{asset.name.substring(0,2)}</span>
                   </div>
@@ -180,7 +181,7 @@ export default function Dashboard() {
                     <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">{asset.desc}</div>
                   </div>
                 </div>
-                <div className="text-right space-y-0.5">
+                <div className="text-right space-y-0.5 relative z-10">
                   <div className="font-black text-sm tracking-tight">{asset.price}</div>
                   <div className="flex items-center justify-end gap-1 text-[10px] font-black text-chart-2 bg-chart-2/10 px-2 py-0.5 rounded-full">
                     <TrendingUp className="h-2.5 w-2.5" />
@@ -189,6 +190,25 @@ export default function Dashboard() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </section>
+
+        {/* Pro / Achievement Card */}
+        <section className="px-1">
+          <div className="bg-linear-to-br from-indigo-600 to-primary p-6 rounded-[2.5rem] shadow-2xl shadow-primary/20 relative overflow-hidden group cursor-pointer">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-12 -translate-y-12 blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shadow-inner">
+                <img src="/src/assets/images/achievement.png" alt="Achievement" className="w-14 h-14 object-contain drop-shadow-2xl" />
+              </div>
+              <div className="flex-1 space-y-1">
+                <h4 className="text-white font-black text-lg leading-tight">Portföyünü Bir Üst Seviyeye Taşı</h4>
+                <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider">Profesyonel araçları keşfet</p>
+                <div className="pt-2">
+                  <Button size="sm" className="bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-8 px-4 text-[10px] uppercase tracking-wider">Hemen Dene</Button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
