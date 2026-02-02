@@ -8,6 +8,8 @@ import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/Dashboard";
 import Portfolio from "@/pages/Portfolio";
 import AddAsset from "@/pages/AddAsset";
+import Transactions from "@/pages/Transactions";
+import Profile from "@/pages/Profile";
 
 function Router() {
   return (
@@ -15,6 +17,8 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/portfolio" component={Portfolio} />
       <Route path="/add" component={AddAsset} />
+      <Route path="/transactions" component={Transactions} />
+      <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>
   );

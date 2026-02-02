@@ -126,9 +126,11 @@ export default function Dashboard() {
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 p-4 pb-8 z-50 glass border-t border-border/50 flex items-center justify-between max-w-md mx-auto">
-        <Button variant="ghost" size="icon" className="text-primary-foreground bg-primary rounded-2xl h-14 w-14 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
-          <Plus className="h-8 w-8" />
-        </Button>
+        <Link href="/add">
+          <Button variant="ghost" size="icon" className="text-primary-foreground bg-primary rounded-2xl h-14 w-14 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+            <Plus className="h-8 w-8" />
+          </Button>
+        </Link>
         <Link href="/">
           <Button variant="ghost" size="icon" className="h-14 w-14 text-primary">
             <PieChart className="h-7 w-7" />
@@ -141,12 +143,16 @@ export default function Dashboard() {
             </div>
           </div>
         </Link>
-        <Button variant="ghost" size="icon" className="h-14 w-14">
-          <ArrowRightLeft className="h-7 w-7 text-muted-foreground" />
-        </Button>
-        <Button variant="ghost" size="icon" className="h-14 w-14">
-          <Menu className="h-7 w-7 text-muted-foreground" />
-        </Button>
+        <Link href="/transactions">
+          <Button variant="ghost" size="icon" className="h-14 w-14">
+            <ArrowRightLeft className="h-7 w-7 text-muted-foreground" />
+          </Button>
+        </Link>
+        <Link href="/profile">
+          <Button variant="ghost" size="icon" className="h-14 w-14">
+            <Menu className="h-7 w-7 text-muted-foreground" />
+          </Button>
+        </Link>
       </nav>
     </div>
   );
