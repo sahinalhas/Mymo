@@ -138,9 +138,7 @@ export default function Dashboard() {
         </Link>
         <Link href="/portfolio">
           <Button variant="ghost" size="icon" className="h-14 w-14">
-            <div className="w-12 h-12 bg-secondary/50 rounded-2xl flex items-center justify-center">
-              <span className="text-primary font-black text-xl">P</span>
-            </div>
+            <Wallet className="h-7 w-7 text-muted-foreground" />
           </Button>
         </Link>
         <Link href="/transactions">
