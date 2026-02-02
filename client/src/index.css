@@ -61,7 +61,7 @@
   --elevate-2: rgba(2, 6, 23, 0.08);
 
   /* Mymo Signature: Elegant Graphite & Emerald */
-  --background: 0 0% 100%;
+  --background: 0 0% 98%;
   --foreground: 240 10% 3.9%;
 
   --card: 0 0% 100%;
@@ -72,12 +72,12 @@
   --popover-foreground: 240 10% 3.9%;
   --popover-border: 240 5.9% 90%;
 
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
+  --border: 240 5.9% 92%;
+  --input: 240 5.9% 92%;
   --ring: 142.1 76.2% 36.3%;
 
-  --primary: 142.1 76.2% 36.3%;
-  --primary-foreground: 355.7 100% 97.3%;
+  --primary: 240 10% 3.9%;
+  --primary-foreground: 0 0% 100%;
 
   --secondary: 240 4.8% 95.9%;
   --secondary-foreground: 240 5.9% 10%;
@@ -85,14 +85,14 @@
   --muted: 240 4.8% 95.9%;
   --muted-foreground: 240 3.8% 46.1%;
 
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
+  --accent: 142.1 76.2% 36.3%;
+  --accent-foreground: 0 0% 100%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
   --chart-1: 142.1 76.2% 36.3%;
-  --chart-2: 173.4 80.4% 40%;
+  --chart-2: 142.1 76.2% 36.3%;
   --chart-3: 198.6 88.7% 48.4%;
   --chart-4: 47.9 95.8% 53.1%;
   --chart-5: 0 84.2% 60.2%;
