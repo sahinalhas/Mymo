@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -7,59 +7,23 @@ import {
   Plus, 
   PieChart, 
   Wallet, 
-  ArrowRightLeft, 
-  Menu,
   Eye,
   Crown
 } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-
-// Finnhub API Key: Gerçek entegrasyon için buraya anahtarınızı ekleyebilirsiniz
-// const FINNHUB_API_KEY = "Sizin_API_Anahtarınız";
-
-// Mock API Simülasyonu - Gerçek API yapısını taklit eder
-const fetchMarketData = async () => {
-  // Simüle edilmiş gecikme
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  // Not: Bu yapı Finnhub, Alpha Vantage ve Marketaux entegrasyonlarına tam uyumludur.
-  return {
-    assets: [
-      { id: 1, name: "EREGL", desc: "Ereğli Demir Çelik", price: (27.54 + Math.random()).toFixed(3), change: "+%4,1", type: "stock", color: "bg-red-500", value: 400000 },
-      { id: 2, name: "TCELL", desc: "Turkcell", price: (113.60 + Math.random()).toFixed(2), change: "+%3,6", type: "stock", color: "bg-yellow-500", value: 300000 },
-      { id: 3, name: "BZY", desc: "BNP PARIBAS CARDI...", price: (0.0613 + Math.random() * 0.01).toFixed(4), change: "+%3,4", type: "fund", color: "bg-blue-500", value: 200000 },
-      { id: 4, name: "Gr Altın", desc: "Kapalı Çarşı", price: (3120.44 + Math.random() * 10).toFixed(2), change: "+%2,9", type: "commodity", color: "bg-amber-500", value: 170320 },
-    ],
-    news: [
-      { id: 1, title: "BIST 100 Rekor Seviyeye Yakın", time: "Az önce", category: "Finnhub News", trend: "up" },
-      { id: 2, title: "Fed Faiz Kararı Bekleniyor", time: "30dk önce", category: "Marketaux AI", trend: "neutral" },
-      { id: 3, title: "Altın Fiyatlarında Hareketlilik", time: "1sa önce", category: "Alpha Vantage", trend: "up" },
-    ],
-    marketSummary: {
-      index: (10418.24 + Math.random() * 50).toFixed(2),
-      change: "+%2,24"
-    }
-  };
-};
+import { useAssets } from '@/hooks/use-portfolio';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Dashboard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: assets, isLoading: assetsLoading } = useAssets();
+  
+  const { data: marketData, isLoading: marketLoading } = useQuery({
+    queryKey: ['/api/market-data', { type: 'BIST' }],
+  });
 
-  useEffect(() => {
-    const loadData = async () => {
-      const result = await fetchMarketData();
-      setData(result);
-      setLoading(result ? false : true);
-    };
-    loadData();
-    const interval = setInterval(loadData, 5000); // 5 saniyede bir "güncelleme"
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading || !data) {
+  if (assetsLoading || marketLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background space-y-4">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -68,15 +32,45 @@ export default function Dashboard() {
     );
   }
 
-  const chartData = data.assets.map((a: any) => ({
-    name: a.name,
-    value: a.value,
-    color: a.id === 1 ? '#ef4444' : a.id === 2 ? '#eab308' : a.id === 3 ? '#3b82f6' : '#f59e0b'
-  }));
+  // Calculate totals and distribution
+  const totalValue = assets?.reduce((sum, asset) => {
+    const price = parseFloat(asset.currentPrice || asset.purchasePrice || '0');
+    return sum + (price * parseFloat(asset.quantity));
+  }, 0) || 0;
+
+  const totalCost = assets?.reduce((sum, asset) => {
+    return sum + (parseFloat(asset.purchasePrice) * parseFloat(asset.quantity));
+  }, 0) || 0;
+
+  const totalProfitLoss = totalValue - totalCost;
+  const profitLossPercentage = totalCost > 0 ? (totalProfitLoss / totalCost) * 100 : 0;
+
+  // Group assets for pie chart
+  const distributionMap = new Map<string, number>();
+  assets?.forEach(asset => {
+    const price = parseFloat(asset.currentPrice || asset.purchasePrice || '0');
+    const value = price * parseFloat(asset.quantity);
+    const type = asset.type || 'Other';
+    distributionMap.set(type, (distributionMap.get(type) || 0) + value);
+  });
+
+  const chartData = Array.from(distributionMap.entries()).map(([name, value], index) => {
+    const colors = ['#10b981', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6'];
+    const typeLabels: Record<string, string> = {
+      'stock': 'Hisse',
+      'crypto': 'Kripto',
+      'commodity': 'Emtia',
+      'fund': 'Fon'
+    };
+    return {
+      name: typeLabels[name] || name,
+      value,
+      color: colors[index % colors.length]
+    };
+  });
 
   return (
     <div className="flex flex-col min-h-screen bg-background pb-32 font-sans selection:bg-primary/10">
-      {/* Header */}
       <header className="px-6 py-6 flex items-center justify-between sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/10">
@@ -86,14 +80,11 @@ export default function Dashboard() {
             <h1 className="text-xl font-bold tracking-tight text-foreground">mymo</h1>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-[0.15em]">Canlı Veri</span>
+              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-[0.15em]">Portföyüm</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="h-10 px-4 rounded-2xl border-border/60 bg-white/5 hover:bg-white/10 transition-all duration-300">
-            <span className="text-xs font-semibold">AI Analiz</span>
-          </Button>
           <Button variant="ghost" size="icon" className="rounded-2xl h-10 w-10 hover:bg-white/5">
             <Eye className="h-5 w-5 text-muted-foreground" />
           </Button>
@@ -101,7 +92,6 @@ export default function Dashboard() {
       </header>
 
       <main className="px-6 py-10 space-y-10 max-w-lg mx-auto w-full">
-        {/* Total Value Section */}
         <section className="space-y-8 animate-in fade-in duration-700">
           <div className="space-y-4 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary/50 rounded-full border border-border/40 text-muted-foreground/80">
@@ -109,25 +99,29 @@ export default function Dashboard() {
                <PieChart className="h-3 w-3" />
             </div>
             <div className="flex items-baseline justify-center gap-2">
-              <h2 className="text-6xl font-black tracking-tight text-foreground">1.070.320</h2>
+              <h2 className="text-6xl font-black tracking-tight text-foreground">
+                {totalValue.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}
+              </h2>
               <span className="text-xl text-muted-foreground/60 font-medium uppercase">TL</span>
             </div>
             <div className="flex items-center justify-center gap-3">
-               <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-bold border border-emerald-500/20">
-                 <TrendingUp className="h-4 w-4" />
-                 <span>23.695</span>
-                 <span className="opacity-70 text-xs font-semibold">(%2,2)</span>
+               <div className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full border ${
+                 totalProfitLoss >= 0 
+                   ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                   : 'bg-red-500/10 text-red-400 border-red-500/20'
+               } text-sm font-bold`}>
+                 {totalProfitLoss >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+                 <span>{Math.abs(totalProfitLoss).toLocaleString('tr-TR', { maximumFractionDigits: 0 })}</span>
+                 <span className="opacity-70 text-xs font-semibold">({profitLossPercentage >= 0 ? '+' : ''}{profitLossPercentage.toFixed(1)}%)</span>
                </div>
-               <div className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-bold">Canlı</div>
             </div>
           </div>
 
-          {/* Elegant Pie Chart */}
-          <div className="h-72 w-full relative bg-card rounded-[3.5rem] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] p-6 overflow-hidden group hover:shadow-[0_48px_80px_-16px_rgba(0,0,0,0.4)] transition-all duration-500">
+          <div className="h-72 w-full relative bg-card rounded-[3.5rem] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] p-6 overflow-hidden transition-all duration-500">
             <ResponsiveContainer width="100%" height="100%">
               <RechartsPieChart>
                 <Pie
-                  data={chartData}
+                  data={chartData.length > 0 ? chartData : [{ name: 'Boş', value: 1, color: '#333' }]}
                   cx="50%"
                   cy="50%"
                   innerRadius={80}
@@ -138,11 +132,12 @@ export default function Dashboard() {
                   animationBegin={0}
                   animationDuration={1000}
                 >
-                  {chartData.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : entry.color} />
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip 
+                  formatter={(value: number) => [value.toLocaleString('tr-TR'), 'Değer']}
                   contentStyle={{ 
                     borderRadius: '24px', 
                     border: '1px solid rgba(255,255,255,0.1)', 
@@ -160,87 +155,52 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-2 gap-5">
-          <Card className="bg-card border-border/40 rounded-[2rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-            <CardContent className="p-6 flex flex-col items-center text-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-1 border border-emerald-500/20">
-                <TrendingUp className="h-6 w-6" />
-              </div>
-              <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">Yıllık Temettü</div>
-              <div className="font-black text-xl text-foreground">12.450 <span className="text-[10px] text-muted-foreground uppercase font-medium">TL</span></div>
-            </CardContent>
-          </Card>
-          <Card className="bg-card border-border/40 rounded-[2rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-            <CardContent className="p-6 flex flex-col items-center text-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-1 border border-primary/30">
-                <PieChart className="h-6 w-6" />
-              </div>
-              <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">Portföy Skoru</div>
-              <div className="font-black text-xl text-foreground">84 <span className="text-[10px] text-muted-foreground uppercase font-medium">/100</span></div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-4 gap-6 py-2">
-          {[
-            { icon: Plus, label: "Ekle", color: "bg-primary text-primary-foreground shadow-xl shadow-primary/20", href: "/add" },
-            { icon: ArrowRightLeft, label: "Takas", color: "bg-card text-foreground border border-border/60 shadow-sm", href: "/transactions" },
-            { icon: PieChart, label: "Analiz", color: "bg-card text-foreground border border-border/60 shadow-sm", href: "/portfolio" },
-            { icon: Crown, label: "Pro", color: "bg-card text-foreground border border-border/60 shadow-sm", href: "/profile" },
-          ].map((action, i) => (
-            <Link key={i} href={action.href}>
-              <div className="flex flex-col items-center gap-3 cursor-pointer group">
-                <div className={`w-16 h-16 ${action.color} rounded-[1.5rem] flex items-center justify-center group-hover:scale-105 group-hover:-translate-y-1.5 transition-all duration-500`}>
-                  <action.icon className="h-7 w-7" />
-                </div>
-                <span className="text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest">{action.label}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Assets List */}
         <section className="space-y-6">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Varlık Dağılımı</h3>
-            <Button variant="ghost" size="sm" className="text-primary h-auto p-0 font-bold text-[11px] uppercase tracking-widest hover:bg-transparent hover:opacity-70">Hepsini Gör</Button>
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Varlıklarım</h3>
+            <Link href="/portfolio">
+              <Button variant="ghost" size="sm" className="text-primary h-auto p-0 font-bold text-[11px] uppercase tracking-widest hover:bg-transparent hover:opacity-70">Tümünü Gör</Button>
+            </Link>
           </div>
           <div className="grid gap-4">
-            {data.assets.map((asset: any, i: number) => (
-              <motion.div 
-                key={asset.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-card border border-border/40 p-5 rounded-[2rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
-              >
-                <div className="flex items-center gap-5">
-                  <div className={`w-14 h-14 ${asset.color} rounded-2xl flex items-center justify-center shadow-lg border border-white/20 group-hover:rotate-3 transition-transform duration-500`}>
-                    <span className="text-white font-black text-sm">{asset.name.substring(0,2)}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="font-bold text-base tracking-tight text-foreground group-hover:text-primary transition-colors">
-                      {asset.name}
+            {assets?.slice(0, 4).map((asset, i) => {
+              const currentPrice = parseFloat(asset.currentPrice || asset.purchasePrice);
+              const value = currentPrice * parseFloat(asset.quantity);
+              return (
+                <motion.div 
+                  key={asset.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="bg-card border border-border/40 p-5 rounded-[2rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 transition-all duration-500"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center shadow-lg border border-white/5">
+                      <span className="text-primary font-black text-sm">{asset.symbol.substring(0,3)}</span>
                     </div>
-                    <div className="text-[10px] text-muted-foreground/70 font-bold uppercase tracking-widest">{asset.desc}</div>
+                    <div className="space-y-1">
+                      <div className="font-bold text-base tracking-tight text-foreground">{asset.name}</div>
+                      <div className="text-[10px] text-muted-foreground/70 font-bold uppercase tracking-widest">{asset.quantity} Adet</div>
+                    </div>
                   </div>
-                </div>
-                <div className="text-right space-y-1.5">
-                  <div className="font-black text-base tracking-tight text-foreground">{asset.price}</div>
-                  <div className="flex items-center justify-end gap-1.5 text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                    <TrendingUp className="h-3 w-3" />
-                    {asset.change}
+                  <div className="text-right space-y-1.5">
+                    <div className="font-black text-base tracking-tight text-foreground">{value.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} TL</div>
+                    <div className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">{currentPrice.toLocaleString('tr-TR')} TL</div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
+            {(!assets || assets.length === 0) && (
+              <div className="text-center py-12 bg-card rounded-[2rem] border border-dashed border-border/60">
+                <p className="text-muted-foreground text-sm">Henüz varlık eklemediniz.</p>
+                <Link href="/add">
+                  <Button variant="link" className="text-primary font-bold mt-2">Varlık Ekle</Button>
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Pro Card */}
         <section className="px-1">
           <div className="bg-primary p-8 rounded-[3rem] shadow-2xl shadow-primary/20 relative overflow-hidden group cursor-pointer">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full translate-x-16 -translate-y-16 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
@@ -249,50 +209,10 @@ export default function Dashboard() {
                 <Crown className="w-12 h-12 text-white drop-shadow-2xl" />
               </div>
               <div className="flex-1 space-y-2">
-                <h4 className="text-white font-black text-xl leading-tight">Portföyünü Bir Üst Seviyeye Taşı</h4>
-                <p className="text-white/60 text-[11px] font-medium uppercase tracking-widest">Profesyonel analiz araçlarını keşfet</p>
-                <div className="pt-3">
-                  <Button size="sm" className="bg-white text-primary hover:bg-white/90 font-black rounded-2xl h-10 px-6 text-[11px] uppercase tracking-widest transition-all duration-300">Hemen Dene</Button>
-                </div>
+                <h4 className="text-white font-black text-xl leading-tight">Pro Analiz Araçları</h4>
+                <p className="text-white/60 text-[11px] font-medium uppercase tracking-widest">AI Destekli Portföy Yönetimi</p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Market Summary Card */}
-        <Card className="bg-primary/5 border-primary/10 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow mt-10">
-          <CardContent className="p-6">
-             <div className="flex items-center justify-between">
-               <div className="space-y-1">
-                 <div className="font-bold text-[10px] uppercase tracking-[0.2em] text-muted-foreground">BIST 100 Endeksi</div>
-                 <div className="text-3xl font-black tracking-tighter">{data.marketSummary.index}</div>
-               </div>
-               <div className="flex flex-col items-end gap-2">
-                 <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-lg shadow-emerald-500/20">
-                   <TrendingUp className="h-3 w-3" />
-                   {data.marketSummary.change}
-                 </div>
-                 <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Piyasa Açık</div>
-               </div>
-             </div>
-          </CardContent>
-        </Card>
-
-        {/* News Section */}
-        <section className="space-y-6 pb-20">
-          <div className="flex items-center justify-between px-2">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Piyasa Haberleri</h3>
-          </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide px-2">
-            {data.news.map((item: any) => (
-              <div key={item.id} className="min-w-[280px] bg-card border border-border/40 p-6 rounded-[2.5rem] space-y-3 hover:border-primary/20 transition-all duration-300 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{item.category}</span>
-                  <span className="text-[10px] text-muted-foreground/60 font-medium">{item.time}</span>
-                </div>
-                <h4 className="font-bold text-sm leading-relaxed">{item.title}</h4>
-              </div>
-            ))}
           </div>
         </section>
       </main>
