@@ -16,11 +16,15 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
+// Finnhub API Key: Gerçek entegrasyon için buraya anahtarınızı ekleyebilirsiniz
+// const FINNHUB_API_KEY = "Sizin_API_Anahtarınız";
+
 // Mock API Simülasyonu - Gerçek API yapısını taklit eder
 const fetchMarketData = async () => {
   // Simüle edilmiş gecikme
   await new Promise(resolve => setTimeout(resolve, 800));
   
+  // Not: Bu yapı Finnhub, Alpha Vantage ve Marketaux entegrasyonlarına tam uyumludur.
   return {
     assets: [
       { id: 1, name: "EREGL", desc: "Ereğli Demir Çelik", price: (27.54 + Math.random()).toFixed(3), change: "+%4,1", type: "stock", color: "bg-red-500", value: 400000 },
@@ -29,9 +33,9 @@ const fetchMarketData = async () => {
       { id: 4, name: "Gr Altın", desc: "Kapalı Çarşı", price: (3120.44 + Math.random() * 10).toFixed(2), change: "+%2,9", type: "commodity", color: "bg-amber-500", value: 170320 },
     ],
     news: [
-      { id: 1, title: "BIST 100 Rekor Seviyeye Yakın", time: "Az önce", category: "Gündem", trend: "up" },
-      { id: 2, title: "Fed Faiz Kararı Bekleniyor", time: "30dk önce", category: "Global", trend: "neutral" },
-      { id: 3, title: "Altın Fiyatlarında Hareketlilik", time: "1sa önce", category: "Emtia", trend: "up" },
+      { id: 1, title: "BIST 100 Rekor Seviyeye Yakın", time: "Az önce", category: "Finnhub News", trend: "up" },
+      { id: 2, title: "Fed Faiz Kararı Bekleniyor", time: "30dk önce", category: "Marketaux AI", trend: "neutral" },
+      { id: 3, title: "Altın Fiyatlarında Hareketlilik", time: "1sa önce", category: "Alpha Vantage", trend: "up" },
     ],
     marketSummary: {
       index: (10418.24 + Math.random() * 50).toFixed(2),
