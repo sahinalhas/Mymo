@@ -1,0 +1,248 @@
+Tamam, ekranı gördüm 👍
+Bu menü yapısını bire bir besleyecek şekilde sana net bir API yol haritası çıkarıyorum. Ama dürüst olayım: tek bir API ile hepsini almak pratikte mümkün değil. En doğru yaklaşım kategori bazlı API kullanmak.
+
+Aşağıda “hangisiyle başla + prod’a gider mi?” netliğiyle yazıyorum.
+
+
+---
+
+🎯 HEDEF: Bu Menüdeki Grupları Doldurmak
+
+Menü:
+
+BIST
+
+Emtia
+
+Döviz
+
+Fon
+
+Eurobond
+
+Kripto
+
+ABD
+
+
+
+---
+
+🥇 1️⃣ BIST (Türkiye Hisseleri) — EN ZOR KISIM
+
+Gerçekçi durum:
+
+BIST için resmî, ücretsiz, stabil API yok
+
+Çoğu uygulama dolaylı / ücretli çözümler kullanır
+
+
+✅ Kullanılabilir seçenekler
+
+🔹 Seçenek A — Finnhub (Ücretli ama temiz)
+
+BIST sınırlı ama bazı hisseler var
+
+Daha çok ABD ağırlıklı
+
+
+🔹 Seçenek B — TradingView (resmî API yok)
+
+❌ Scraping → önerilmez (ban riski)
+
+
+🔹 Seçenek C — Matriks / Foreks Data
+
+✅ Profesyonel
+
+❌ Pahalı (kurumsal)
+
+
+📌 MVP için önerim:
+👉 BIST’i ilk versiyonda “gecikmeli” veya sınırlı başlat, ABD ile ilerle
+
+
+---
+
+🇺🇸 2️⃣ ABD Hisseleri — BURADAN BAŞLA
+
+✅ En iyi başlangıç API’si:
+
+Alpha Vantage
+
+ABD hisseleri full
+
+Ücretsiz
+
+JSON
+
+Mobil uyumlu
+
+
+Örnek:
+
+AAPL
+MSFT
+NVDA
+TSLA
+
+📌 Bu API ile:
+
+ABD menüsünü
+
+Grafik ekranını
+
+Favoriler / portföy mantığını tamamen kurarsın.
+
+
+
+---
+
+💱 3️⃣ Döviz (USD, EUR, GBP…)
+
+✅ En temiz ve ücretsiz:
+
+exchangerate.host
+
+API key yok
+
+Gerçek zamanlıya yakın
+
+
+Örnek:
+
+USD/TRY
+EUR/TRY
+
+
+---
+
+🪙 4️⃣ Kripto
+
+✅ Net cevap:
+
+Binance API
+
+Ücretsiz
+
+Gerçek zamanlı
+
+Stabil
+
+
+Örnek:
+
+BTCUSDT
+ETHUSDT
+SOLUSDT
+
+Mobil app’lerin %80’i bunu kullanır.
+
+
+---
+
+🪨 5️⃣ Emtia (Altın, Gümüş, Petrol)
+
+İki yol var:
+
+🔹 Kolay & ücretsiz:
+
+exchangerate.host → altın/döviz bazlı
+
+
+🔹 Daha profesyonel:
+
+metals-api
+
+goldapi
+
+
+📌 MVP için:
+👉 Altın + gümüş yeter → sonra genişletirsin
+
+
+---
+
+📊 6️⃣ Fon (TEFAS)
+
+Gerçek durum:
+
+❌ Resmî public API yok
+
+Çoğu uygulama TEFAS verisini proxy’ler
+
+
+MVP önerisi:
+
+İlk etapta manuel liste + günlük NAV
+
+Ya da bu menüyü “yakında” yap
+
+
+
+---
+
+💶 7️⃣ Eurobond
+
+Gerçekçi durum:
+
+Zor
+
+Kurumsal data (bankalar, Bloomberg, Refinitiv)
+
+
+📌 MVP’de: 👉 Eurobond’u statik / bilgilendirici yap
+👉 Canlı fiyatı sonraya bırak
+
+
+---
+
+🧠 EN AKILLI BAŞLANGIÇ STRATEJİSİ
+
+🔥 MVP Sıralaması (çok önemli):
+
+1️⃣ ABD (Alpha Vantage)
+2️⃣ Kripto (Binance)
+3️⃣ Döviz (exchangerate.host)
+4️⃣ Emtia (altın/gümüş)
+5️⃣ Sonra → BIST / Fon / Eurobond
+
+Bu sırayla:
+
+Uygulama boş kalmaz
+
+App Store / Play Store’da çalışır ürün olur
+
+Sonra zor dataları eklersin
+
+
+
+---
+
+🧩 Mimari Öneri (Altın Değerinde)
+
+❌ Mobil → API direkt çağırma
+✅ Mobil → Backend → API
+
+Neden?
+
+API key gizlenir
+
+Limit aşılmaz
+
+Provider değiştirmen kolay olur
+
+
+
+---
+
+🚀 İstersen Bir Sonraki Adım:
+
+Sana tek backend endpoint şeması çizeyim
+(örn: /api/market?type=crypto)
+
+Ya da hangi platformla (Flutter / React Native / Swift) başladığını söyle → örnek kod yazayım
+
+
+Şu an en mantıklı soru şu 👇
+👉 Önce ABD mi Kripto mu?
