@@ -79,7 +79,7 @@ export default function Dashboard() {
           </div>
 
           {/* Elegant Pie Chart */}
-          <div className="h-72 w-full relative bg-white rounded-[3.5rem] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)] p-6 overflow-hidden group hover:shadow-[0_48px_80px_-16px_rgba(0,0,0,0.08)] transition-all duration-500">
+          <div className="h-72 w-full relative bg-card rounded-[3.5rem] border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] p-6 overflow-hidden group hover:shadow-[0_48px_80px_-16px_rgba(0,0,0,0.4)] transition-all duration-500">
             <ResponsiveContainer width="100%" height="100%">
               <RechartsPieChart>
                 <Pie
@@ -101,9 +101,9 @@ export default function Dashboard() {
                 <Tooltip 
                   contentStyle={{ 
                     borderRadius: '24px', 
-                    border: '1px solid rgba(0,0,0,0.05)', 
-                    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
-                    backgroundColor: 'white',
+                    border: '1px solid rgba(255,255,255,0.1)', 
+                    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+                    backgroundColor: 'hsl(var(--card))',
                     padding: '16px'
                   }}
                 />
@@ -118,18 +118,18 @@ export default function Dashboard() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-5">
-          <Card className="bg-white border-border/40 rounded-[2rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+          <Card className="bg-card border-border/40 rounded-[2rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <CardContent className="p-6 flex flex-col items-center text-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-1 border border-emerald-100">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-1 border border-emerald-500/20">
                 <TrendingUp className="h-6 w-6" />
               </div>
               <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">Yıllık Temettü</div>
               <div className="font-black text-xl text-foreground">12.450 <span className="text-[10px] text-muted-foreground uppercase font-medium">TL</span></div>
             </CardContent>
           </Card>
-          <Card className="bg-white border-border/40 rounded-[2rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+          <Card className="bg-card border-border/40 rounded-[2rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
             <CardContent className="p-6 flex flex-col items-center text-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center text-primary mb-1 border border-primary/10">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-1 border border-primary/30">
                 <PieChart className="h-6 w-6" />
               </div>
               <div className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">Portföy Skoru</div>
@@ -142,9 +142,9 @@ export default function Dashboard() {
         <div className="grid grid-cols-4 gap-6 py-2">
           {[
             { icon: Plus, label: "Ekle", color: "bg-primary text-primary-foreground shadow-xl shadow-primary/20", href: "/add" },
-            { icon: ArrowRightLeft, label: "Takas", color: "bg-white text-foreground border border-border/60 shadow-sm", href: "/transactions" },
-            { icon: PieChart, label: "Analiz", color: "bg-white text-foreground border border-border/60 shadow-sm", href: "/portfolio" },
-            { icon: Crown, label: "Pro", color: "bg-white text-foreground border border-border/60 shadow-sm", href: "/profile" },
+            { icon: ArrowRightLeft, label: "Takas", color: "bg-card text-foreground border border-border/60 shadow-sm", href: "/transactions" },
+            { icon: PieChart, label: "Analiz", color: "bg-card text-foreground border border-border/60 shadow-sm", href: "/portfolio" },
+            { icon: Crown, label: "Pro", color: "bg-card text-foreground border border-border/60 shadow-sm", href: "/profile" },
           ].map((action, i) => (
             <Link key={i} href={action.href}>
               <div className="flex flex-col items-center gap-3 cursor-pointer group">
@@ -171,7 +171,7 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white border border-border/40 p-5 rounded-[2rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
+                className="bg-card border border-border/40 p-5 rounded-[2rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
               >
                 <div className="flex items-center gap-5">
                   <div className={`w-14 h-14 ${asset.color} rounded-2xl flex items-center justify-center shadow-lg border border-white/20 group-hover:rotate-3 transition-transform duration-500`}>
@@ -186,7 +186,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right space-y-1.5">
                   <div className="font-black text-base tracking-tight text-foreground">{asset.price}</div>
-                  <div className="flex items-center justify-end gap-1.5 text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
+                  <div className="flex items-center justify-end gap-1.5 text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                     <TrendingUp className="h-3 w-3" />
                     {asset.change}
                   </div>
