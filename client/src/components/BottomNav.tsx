@@ -5,7 +5,7 @@ import {
   PieChart, 
   Wallet, 
   Plus, 
-  ArrowRightLeft, 
+  TrendingUp, 
   Menu 
 } from "lucide-react";
 
@@ -16,7 +16,7 @@ export default function BottomNav() {
     { href: "/", icon: PieChart, label: "Ana Sayfa" },
     { href: "/portfolio", icon: Wallet, label: "Portföy" },
     { href: "/add", icon: Plus, label: "Ekle", isCenter: true },
-    { href: "/transactions", icon: ArrowRightLeft, label: "İşlemler" },
+    { href: "/markets", icon: TrendingUp, label: "Piyasalar" },
     { href: "/profile", icon: Menu, label: "Profil" },
   ];
 
