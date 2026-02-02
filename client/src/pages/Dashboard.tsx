@@ -137,11 +137,11 @@ export default function Dashboard() {
           </Button>
         </Link>
         <Link href="/portfolio">
-          <div className="h-14 w-14 flex items-center justify-center">
+          <Button variant="ghost" size="icon" className="h-14 w-14">
             <div className="w-12 h-12 bg-secondary/50 rounded-2xl flex items-center justify-center">
-               <span className="text-primary font-black text-xl">P</span>
+              <span className="text-primary font-black text-xl">P</span>
             </div>
-          </div>
+          </Button>
         </Link>
         <Link href="/transactions">
           <Button variant="ghost" size="icon" className="h-14 w-14">
