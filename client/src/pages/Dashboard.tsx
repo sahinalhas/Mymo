@@ -26,12 +26,15 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen soft-gradient noise pb-24">
       {/* Header */}
-      <header className="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+      <header className="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-4 backdrop-blur-xl">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 bg-linear-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mymo-shadow">
             <Wallet className="text-primary-foreground h-6 w-6" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight">mymo</h1>
+          <div>
+            <h1 className="text-xl font-black tracking-tighter leading-none">mymo</h1>
+            <span className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">Investment</span>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" className="rounded-full bg-secondary/50">
