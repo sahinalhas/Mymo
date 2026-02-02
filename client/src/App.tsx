@@ -10,6 +10,7 @@ import Portfolio from "@/pages/Portfolio";
 import AddAsset from "@/pages/AddAsset";
 import Transactions from "@/pages/Transactions";
 import Profile from "@/pages/Profile";
+import BottomNav from "@/components/BottomNav";
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <TooltipProvider>
           <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
             <Router />
+            <BottomNav />
             <Toaster />
           </div>
         </TooltipProvider>

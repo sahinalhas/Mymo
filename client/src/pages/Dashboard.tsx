@@ -188,37 +188,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </main>
-
-      {/* Modern Bottom Navigation */}
-      <nav className="fixed bottom-6 left-6 right-6 p-2 z-50 bg-card/80 backdrop-blur-xl border border-border/50 rounded-full flex items-center justify-between max-w-md mx-auto shadow-2xl">
-        <Link href="/">
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full text-primary bg-primary/10">
-            <PieChart className="h-6 w-6" />
-          </Button>
-        </Link>
-        <Link href="/portfolio">
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-secondary/50">
-            <Wallet className="h-6 w-6 text-muted-foreground" />
-          </Button>
-        </Link>
-        <div className="relative -top-1">
-          <Link href="/add">
-            <Button size="icon" className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 active:scale-95 transition-all bg-primary">
-              <Plus className="h-8 w-8 text-primary-foreground" />
-            </Button>
-          </Link>
-        </div>
-        <Link href="/transactions">
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-secondary/50">
-            <ArrowRightLeft className="h-6 w-6 text-muted-foreground" />
-          </Button>
-        </Link>
-        <Link href="/profile">
-          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-secondary/50">
-            <Menu className="h-6 w-6 text-muted-foreground" />
-          </Button>
-        </Link>
-      </nav>
     </div>
   );
 }
