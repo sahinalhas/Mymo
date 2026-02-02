@@ -59,6 +59,24 @@ export const insertAssetSchema = createInsertSchema(assets, {
 export type InsertAsset = z.infer<typeof insertAssetSchema>;
 export type Asset = typeof assets.$inferSelect;
 
+export const markets = pgTable("markets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type").notNull(), // 'BIST', 'ABD', 'CRYPTO', 'FOREX', 'COMMODITY'
+  symbol: text("symbol").notNull(),
+  name: text("name").notNull(),
+  price: decimal("price", { precision: 20, scale: 8 }),
+  change: decimal("change", { precision: 10, scale: 2 }),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertMarketSchema = createInsertSchema(markets).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type Market = typeof markets.$inferSelect;
+export type InsertMarket = z.infer<typeof insertMarketSchema>;
+
 export const transactions = pgTable("transactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull(),

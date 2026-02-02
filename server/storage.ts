@@ -7,10 +7,13 @@ import {
   type InsertCategory,
   type Transaction,
   type InsertTransaction,
+  type Market,
+  type InsertMarket,
   users,
   assets,
   categories,
-  transactions
+  transactions,
+  markets
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -32,6 +35,9 @@ export interface IStorage {
   getTransactions(userId: string): Promise<Transaction[]>;
   getTransactionsByAsset(assetId: string): Promise<Transaction[]>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
+
+  getMarketData(type: string): Promise<Market[]>;
+  updateMarketPrice(symbol: string, price: string, change: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -105,6 +111,16 @@ export class DatabaseStorage implements IStorage {
   async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
     const result = await db.insert(transactions).values(insertTransaction).returning();
     return result[0];
+  }
+
+  async getMarketData(type: string): Promise<Market[]> {
+    return await db.select().from(markets).where(eq(markets.type, type));
+  }
+
+  async updateMarketPrice(symbol: string, price: string, change: string): Promise<void> {
+    await db.update(markets)
+      .set({ price, change, updatedAt: new Date() })
+      .where(eq(markets.symbol, symbol));
   }
 }
 

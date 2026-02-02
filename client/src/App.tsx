@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/Dashboard";
 import Portfolio from "@/pages/Portfolio";
 import AddAsset from "@/pages/AddAsset";
+import MarketData from "@/pages/MarketData";
 import Transactions from "@/pages/Transactions";
 import Profile from "@/pages/Profile";
 import BottomNav from "@/components/BottomNav";
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/portfolio" component={Portfolio} />
       <Route path="/add" component={AddAsset} />
+      <Route path="/markets" component={MarketData} />
       <Route path="/transactions" component={Transactions} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />

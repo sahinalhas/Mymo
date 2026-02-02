@@ -388,5 +388,54 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/market-data", async (req, res) => {
+    try {
+      const type = req.query.type as string;
+      if (!type) {
+        return res.status(400).json({ message: "type is required" });
+      }
+
+      const marketData = await fetchWithCache(`market-${type}`, async () => {
+        if (type === 'CRYPTO') {
+          const response = await fetch(
+            'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1'
+          );
+          const data = await response.json();
+          return data.map((coin: any) => ({
+            symbol: coin.symbol.toUpperCase(),
+            name: coin.name,
+            price: coin.current_price,
+            change: coin.price_change_percentage_24h,
+          }));
+        }
+        
+        // Mock data for other types for now as per MVP advice
+        const mockData: Record<string, any[]> = {
+          'BIST': [
+            { symbol: 'THYAO', name: 'Türk Hava Yolları', price: '285.50', change: '1.2' },
+            { symbol: 'GARAN', name: 'Garanti BBVA', price: '62.30', change: '-0.5' },
+          ],
+          'ABD': [
+            { symbol: 'AAPL', name: 'Apple Inc.', price: '185.92', change: '0.8' },
+            { symbol: 'TSLA', name: 'Tesla, Inc.', price: '193.57', change: '-2.1' },
+          ],
+          'FOREX': [
+            { symbol: 'USDTRY', name: 'Dolar/TL', price: '30.45', change: '0.1' },
+            { symbol: 'EURTRY', name: 'Euro/TL', price: '32.90', change: '0.2' },
+          ],
+          'COMMODITY': [
+            { symbol: 'XAU', name: 'Altın (Ons)', price: '2035.40', change: '0.3' },
+            { symbol: 'XAG', name: 'Gümüş (Ons)', price: '22.85', change: '-0.4' },
+          ]
+        };
+        return mockData[type] || [];
+      });
+
+      res.json(marketData);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   return httpServer;
 }
