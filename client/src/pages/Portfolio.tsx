@@ -19,16 +19,11 @@ export default function Portfolio() {
     <div className="flex flex-col min-h-screen soft-gradient pb-32 font-sans">
        <header className="px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-secondary/50 h-10 w-10">
-              <ChevronLeft className="h-6 w-6" />
-            </Button>
-          </Link>
           <h1 className="text-xl font-bold tracking-tight">Analiz ve Dağılım</h1>
         </div>
       </header>
 
-      <main className="px-6 py-8 space-y-8 max-w-md mx-auto w-full">
+      <main className="px-6 py-8 space-y-8 max-w-md mx-auto w-full pb-32">
         <section className="text-center space-y-4">
            <div className="space-y-1">
              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">En Büyük Pay</div>

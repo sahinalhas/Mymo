@@ -18,11 +18,6 @@ export default function AddAsset() {
   return (
     <div className="flex flex-col min-h-screen soft-gradient pb-24 font-sans">
       <header className="px-6 py-4 flex items-center gap-4 sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50 mb-6">
-        <Link href="/">
-          <Button variant="ghost" size="icon" className="rounded-xl hover:bg-secondary/50 h-10 w-10">
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-        </Link>
         <h1 className="text-xl font-bold tracking-tight">Yeni Varlık Ekle</h1>
       </header>
 

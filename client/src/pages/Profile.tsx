@@ -17,11 +17,6 @@ export default function Profile() {
     <div className="flex flex-col min-h-screen soft-gradient noise pb-24">
       <header className="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-4 backdrop-blur-xl">
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <Button variant="ghost" size="icon" className="rounded-xl bg-secondary/50 h-10 w-10">
-              <ChevronLeft className="h-6 w-6" />
-            </Button>
-          </Link>
           <h1 className="text-xl font-black tracking-tight">Menü</h1>
         </div>
       </header>
