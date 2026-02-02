@@ -2,101 +2,19 @@ import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, Plus, Search, Check, X } from "lucide-react";
+import { ChevronLeft, Plus, Search, Check, X, Loader2 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useCreateAsset, useCategories } from "@/hooks/use-portfolio";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
-// Predefined assets for each category
-const predefinedAssets = {
-  stock: [
-    { symbol: 'THYAO', name: 'Türk Hava Yolları' },
-    { symbol: 'GARAN', name: 'Garanti Bankası' },
-    { symbol: 'AKBNK', name: 'Akbank' },
-    { symbol: 'EREGL', name: 'Ereğli Demir Çelik' },
-    { symbol: 'BIMAS', name: 'BİM Mağazalar' },
-    { symbol: 'SISE', name: 'Şişe Cam' },
-    { symbol: 'KCHOL', name: 'Koç Holding' },
-    { symbol: 'SAHOL', name: 'Sabancı Holding' },
-    { symbol: 'ASELS', name: 'Aselsan' },
-    { symbol: 'TUPRS', name: 'Tüpraş' },
-    { symbol: 'TCELL', name: 'Turkcell' },
-    { symbol: 'YKBNK', name: 'Yapı Kredi' },
-    { symbol: 'HALKB', name: 'Halkbank' },
-    { symbol: 'ISCTR', name: 'İş Bankası C' },
-    { symbol: 'VAKBN', name: 'Vakıfbank' },
-    { symbol: 'PGSUS', name: 'Pegasus' },
-    { symbol: 'KOZAL', name: 'Koza Altın' },
-    { symbol: 'KOZAA', name: 'Koza Anadolu' },
-    { symbol: 'EKGYO', name: 'Emlak Konut GYO' },
-    { symbol: 'TOASO', name: 'Tofaş Otomobil' },
-    { symbol: 'FROTO', name: 'Ford Otosan' },
-    { symbol: 'ARCLK', name: 'Arçelik' },
-    { symbol: 'VESTL', name: 'Vestel Elektronik' },
-    { symbol: 'ULKER', name: 'Ülker Bisküvi' },
-    { symbol: 'TAVHL', name: 'TAV Havalimanları' },
-    { symbol: 'PETKM', name: 'Petkim' },
-    { symbol: 'SASA', name: 'Sasa Polyester' },
-    { symbol: 'KRDMD', name: 'Kardemir D' },
-    { symbol: 'DOHOL', name: 'Doğan Holding' },
-    { symbol: 'TTKOM', name: 'Türk Telekom' },
-  ],
-  fund: [
-    { symbol: 'ZPX', name: 'Ziraat Portföy Altın Fonu' },
-    { symbol: 'GAF', name: 'Garanti Portföy Altın Fonu' },
-    { symbol: 'TAF', name: 'Türkiye İş Bankası Altın Fonu' },
-    { symbol: 'YAF', name: 'Yapı Kredi Altın Fonu' },
-    { symbol: 'TI2', name: 'Türkiye İş Bankası Değişken Fon' },
-    { symbol: 'ZDJ', name: 'Ziraat Portföy BIST30 Fonu' },
-    { symbol: 'AFT', name: 'Ak Portföy Teknoloji Fonu' },
-    { symbol: 'ZPE', name: 'Ziraat Portföy Eurobond Fonu' },
-    { symbol: 'GAE', name: 'Garanti Portföy Eurobond Fonu' },
-    { symbol: 'YEF', name: 'Yapı Kredi Eurobond Fonu' },
-    { symbol: 'HSY', name: 'HSBC Portföy Yabancı Fon' },
-    { symbol: 'TCD', name: 'TEB Portföy Değişken Fon' },
-  ],
-  crypto: [
-    { symbol: 'BTC', name: 'Bitcoin' },
-    { symbol: 'ETH', name: 'Ethereum' },
-    { symbol: 'BNB', name: 'Binance Coin' },
-    { symbol: 'XRP', name: 'Ripple' },
-    { symbol: 'ADA', name: 'Cardano' },
-    { symbol: 'DOGE', name: 'Dogecoin' },
-    { symbol: 'SOL', name: 'Solana' },
-    { symbol: 'DOT', name: 'Polkadot' },
-    { symbol: 'MATIC', name: 'Polygon' },
-    { symbol: 'AVAX', name: 'Avalanche' },
-    { symbol: 'LINK', name: 'Chainlink' },
-    { symbol: 'UNI', name: 'Uniswap' },
-    { symbol: 'ATOM', name: 'Cosmos' },
-    { symbol: 'LTC', name: 'Litecoin' },
-    { symbol: 'TRX', name: 'Tron' },
-    { symbol: 'SHIB', name: 'Shiba Inu' },
-    { symbol: 'XLM', name: 'Stellar' },
-    { symbol: 'NEAR', name: 'NEAR Protocol' },
-    { symbol: 'APT', name: 'Aptos' },
-    { symbol: 'ARB', name: 'Arbitrum' },
-  ],
-  commodity: [
-    { symbol: 'GAU', name: 'Gram Altın' },
-    { symbol: 'GAUSP', name: 'Gram Altın (Spot)' },
-    { symbol: 'HASALT', name: 'Has Altın' },
-    { symbol: 'CEYREK', name: 'Çeyrek Altın' },
-    { symbol: 'YARIM', name: 'Yarım Altın' },
-    { symbol: 'TAM', name: 'Tam Altın' },
-    { symbol: 'CUMALT', name: 'Cumhuriyet Altını' },
-    { symbol: 'RESAT', name: 'Reşat Altın' },
-    { symbol: 'ATA', name: 'Ata Altın' },
-    { symbol: '14AYAR', name: 'Bilezik 14 Ayar' },
-    { symbol: '18AYAR', name: 'Bilezik 18 Ayar' },
-    { symbol: '22AYAR', name: 'Bilezik 22 Ayar' },
-    { symbol: 'GUMUS', name: 'Gümüş (Gram)' },
-    { symbol: 'PLATIN', name: 'Platin (Gram)' },
-    { symbol: 'USD', name: 'Amerikan Doları' },
-    { symbol: 'EUR', name: 'Euro' },
-    { symbol: 'GBP', name: 'İngiliz Sterlini' },
-  ],
-};
+interface AvailableAsset {
+  symbol: string;
+  name: string;
+  image?: string;
+  currentPrice?: number;
+  priceChange24h?: number;
+}
 
 export default function AddAsset() {
   const [, setLocation] = useLocation();
@@ -107,7 +25,7 @@ export default function AddAsset() {
   const [selectedType, setSelectedType] = useState('stock');
   const [searchQuery, setSearchQuery] = useState('');
   const [showAssetList, setShowAssetList] = useState(false);
-  const [selectedAsset, setSelectedAsset] = useState<{ symbol: string; name: string } | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<AvailableAsset | null>(null);
   const [formData, setFormData] = useState({
     quantity: '',
     purchasePrice: '',
@@ -121,8 +39,19 @@ export default function AddAsset() {
     { id: 'commodity', label: 'Emtia', icon: '🟡', color: 'bg-amber-500', categoryName: 'Emtia & Altın' },
   ];
 
+  // Fetch available assets from API
+  const { data: availableAssets, isLoading: isLoadingAssets } = useQuery<AvailableAsset[]>({
+    queryKey: ['/api/available-assets', selectedType],
+    queryFn: async () => {
+      const response = await fetch(`/api/available-assets/${selectedType}`);
+      if (!response.ok) throw new Error('Failed to fetch assets');
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   const filteredAssets = useMemo(() => {
-    const assets = predefinedAssets[selectedType as keyof typeof predefinedAssets] || [];
+    const assets = availableAssets || [];
     if (!searchQuery.trim()) return assets;
     
     const query = searchQuery.toLowerCase();
@@ -131,7 +60,7 @@ export default function AddAsset() {
         asset.symbol.toLowerCase().includes(query) ||
         asset.name.toLowerCase().includes(query)
     );
-  }, [selectedType, searchQuery]);
+  }, [availableAssets, searchQuery]);
 
   const handleTypeChange = (typeId: string) => {
     setSelectedType(typeId);
@@ -140,7 +69,7 @@ export default function AddAsset() {
     setShowAssetList(false);
   };
 
-  const handleAssetSelect = (asset: { symbol: string; name: string }) => {
+  const handleAssetSelect = (asset: AvailableAsset) => {
     setSelectedAsset(asset);
     setShowAssetList(false);
     setSearchQuery('');
@@ -176,6 +105,7 @@ export default function AddAsset() {
         type: selectedType,
         quantity: formData.quantity,
         purchasePrice: formData.purchasePrice,
+        currentPrice: selectedAsset.currentPrice?.toString(),
         purchaseDate: new Date(formData.purchaseDate),
       });
       
@@ -197,6 +127,13 @@ export default function AddAsset() {
   const getCurrencyLabel = () => {
     if (selectedType === 'crypto') return 'USD';
     return 'TL';
+  };
+
+  const formatPrice = (price: number) => {
+    if (price >= 1) {
+      return price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    return price.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
   };
 
   return (
@@ -240,9 +177,13 @@ export default function AddAsset() {
                 data-testid="button-change-asset"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Check className="h-4 w-4 text-primary" />
-                  </div>
+                  {selectedAsset.image ? (
+                    <img src={selectedAsset.image} alt={selectedAsset.name} className="w-8 h-8 rounded-lg" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Check className="h-4 w-4 text-primary" />
+                    </div>
+                  )}
                   <div>
                     <span className="font-bold text-base">{selectedAsset.symbol}</span>
                     <span className="text-muted-foreground text-sm ml-2">{selectedAsset.name}</span>
@@ -303,34 +244,56 @@ export default function AddAsset() {
 
                   {/* Asset List */}
                   <div className="flex-1 overflow-y-auto px-6 pb-6">
-                    <div className="space-y-2">
-                      {filteredAssets.map((asset) => (
-                        <button
-                          key={asset.symbol}
-                          onClick={() => handleAssetSelect(asset)}
-                          className="w-full p-4 rounded-xl bg-card border border-border/50 flex items-center justify-between hover:border-primary/50 hover:bg-muted/30 transition-all active:scale-[0.98]"
-                          data-testid={`button-asset-${asset.symbol}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-                              <span className="font-bold text-xs">{asset.symbol.slice(0, 3)}</span>
+                    {isLoadingAssets ? (
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {filteredAssets.map((asset) => (
+                          <button
+                            key={asset.symbol}
+                            onClick={() => handleAssetSelect(asset)}
+                            className="w-full p-4 rounded-xl bg-card border border-border/50 flex items-center justify-between hover:border-primary/50 hover:bg-muted/30 transition-all active:scale-[0.98]"
+                            data-testid={`button-asset-${asset.symbol}`}
+                          >
+                            <div className="flex items-center gap-3">
+                              {asset.image ? (
+                                <img src={asset.image} alt={asset.name} className="w-10 h-10 rounded-lg" />
+                              ) : (
+                                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                                  <span className="font-bold text-xs">{asset.symbol.slice(0, 3)}</span>
+                                </div>
+                              )}
+                              <div className="text-left">
+                                <div className="font-bold">{asset.symbol}</div>
+                                <div className="text-sm text-muted-foreground">{asset.name}</div>
+                              </div>
                             </div>
-                            <div className="text-left">
-                              <div className="font-bold">{asset.symbol}</div>
-                              <div className="text-sm text-muted-foreground">{asset.name}</div>
+                            <div className="text-right">
+                              {asset.currentPrice && (
+                                <>
+                                  <div className="font-bold">${formatPrice(asset.currentPrice)}</div>
+                                  {asset.priceChange24h !== undefined && (
+                                    <div className={`text-sm ${asset.priceChange24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                      {asset.priceChange24h >= 0 ? '+' : ''}{asset.priceChange24h.toFixed(2)}%
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                              {selectedAsset?.symbol === asset.symbol && (
+                                <Check className="h-5 w-5 text-primary inline-block" />
+                              )}
                             </div>
+                          </button>
+                        ))}
+                        {filteredAssets.length === 0 && !isLoadingAssets && (
+                          <div className="text-center py-8 text-muted-foreground">
+                            Sonuç bulunamadı
                           </div>
-                          {selectedAsset?.symbol === asset.symbol && (
-                            <Check className="h-5 w-5 text-primary" />
-                          )}
-                        </button>
-                      ))}
-                      {filteredAssets.length === 0 && (
-                        <div className="text-center py-8 text-muted-foreground">
-                          Sonuç bulunamadı
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
