@@ -23,6 +23,12 @@ const assets = [
   { id: 4, name: "Gr Altın", desc: "Kapalı Çarşı", price: "3.120,44", change: "+%2,9", type: "commodity", color: "bg-amber-500", value: 170320 },
 ];
 
+const news = [
+  { id: 1, title: "BIST 100 Rekor Seviyeye Yakın", time: "10dk önce", category: "Gündem", trend: "up" },
+  { id: 2, title: "Fed Faiz Kararı Bekleniyor", time: "45dk önce", category: "Global", trend: "neutral" },
+  { id: 3, title: "Altın Fiyatlarında Hareketlilik", time: "1sa önce", category: "Emtia", trend: "up" },
+];
+
 const chartData = assets.map(a => ({
   name: a.name,
   value: a.value,
@@ -233,6 +239,24 @@ export default function Dashboard() {
              </div>
           </CardContent>
         </Card>
+
+        {/* News Section */}
+        <section className="space-y-6 pb-12">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Piyasa Haberleri</h3>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide px-2">
+            {news.map((item) => (
+              <div key={item.id} className="min-w-[280px] bg-card border border-border/40 p-6 rounded-[2.5rem] space-y-3 hover:border-primary/20 transition-all duration-300 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{item.category}</span>
+                  <span className="text-[10px] text-muted-foreground/60 font-medium">{item.time}</span>
+                </div>
+                <h4 className="font-bold text-sm leading-relaxed">{item.title}</h4>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
