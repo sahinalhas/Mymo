@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -16,28 +16,62 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
-const assets = [
-  { id: 1, name: "EREGL", desc: "Ereğli Demir Çelik", price: "27,540", change: "+%4,1", type: "stock", color: "bg-red-500", value: 400000 },
-  { id: 2, name: "TCELL", desc: "Turkcell", price: "113,60", change: "+%3,6", type: "stock", color: "bg-yellow-500", value: 300000 },
-  { id: 3, name: "BZY", desc: "BNP PARIBAS CARDI...", price: "0,0613", change: "+%3,4", type: "fund", color: "bg-blue-500", value: 200000 },
-  { id: 4, name: "Gr Altın", desc: "Kapalı Çarşı", price: "3.120,44", change: "+%2,9", type: "commodity", color: "bg-amber-500", value: 170320 },
-];
-
-const news = [
-  { id: 1, title: "BIST 100 Rekor Seviyeye Yakın", time: "10dk önce", category: "Gündem", trend: "up" },
-  { id: 2, title: "Fed Faiz Kararı Bekleniyor", time: "45dk önce", category: "Global", trend: "neutral" },
-  { id: 3, title: "Altın Fiyatlarında Hareketlilik", time: "1sa önce", category: "Emtia", trend: "up" },
-];
-
-const chartData = assets.map(a => ({
-  name: a.name,
-  value: a.value,
-  color: a.id === 1 ? '#ef4444' : a.id === 2 ? '#eab308' : a.id === 3 ? '#3b82f6' : '#f59e0b'
-}));
+// Mock API Simülasyonu - Gerçek API yapısını taklit eder
+const fetchMarketData = async () => {
+  // Simüle edilmiş gecikme
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  return {
+    assets: [
+      { id: 1, name: "EREGL", desc: "Ereğli Demir Çelik", price: (27.54 + Math.random()).toFixed(3), change: "+%4,1", type: "stock", color: "bg-red-500", value: 400000 },
+      { id: 2, name: "TCELL", desc: "Turkcell", price: (113.60 + Math.random()).toFixed(2), change: "+%3,6", type: "stock", color: "bg-yellow-500", value: 300000 },
+      { id: 3, name: "BZY", desc: "BNP PARIBAS CARDI...", price: (0.0613 + Math.random() * 0.01).toFixed(4), change: "+%3,4", type: "fund", color: "bg-blue-500", value: 200000 },
+      { id: 4, name: "Gr Altın", desc: "Kapalı Çarşı", price: (3120.44 + Math.random() * 10).toFixed(2), change: "+%2,9", type: "commodity", color: "bg-amber-500", value: 170320 },
+    ],
+    news: [
+      { id: 1, title: "BIST 100 Rekor Seviyeye Yakın", time: "Az önce", category: "Gündem", trend: "up" },
+      { id: 2, title: "Fed Faiz Kararı Bekleniyor", time: "30dk önce", category: "Global", trend: "neutral" },
+      { id: 3, title: "Altın Fiyatlarında Hareketlilik", time: "1sa önce", category: "Emtia", trend: "up" },
+    ],
+    marketSummary: {
+      index: (10418.24 + Math.random() * 50).toFixed(2),
+      change: "+%2,24"
+    }
+  };
+};
 
 export default function Dashboard() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const result = await fetchMarketData();
+      setData(result);
+      setLoading(result ? false : true);
+    };
+    loadData();
+    const interval = setInterval(loadData, 5000); // 5 saniyede bir "güncelleme"
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !data) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background space-y-4">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest animate-pulse">Veriler Çekiliyor...</p>
+      </div>
+    );
+  }
+
+  const chartData = data.assets.map((a: any) => ({
+    name: a.name,
+    value: a.value,
+    color: a.id === 1 ? '#ef4444' : a.id === 2 ? '#eab308' : a.id === 3 ? '#3b82f6' : '#f59e0b'
+  }));
+
   return (
-    <div className="flex flex-col min-h-screen bg-background pb-24 font-sans selection:bg-primary/10">
+    <div className="flex flex-col min-h-screen bg-background pb-32 font-sans selection:bg-primary/10">
       {/* Header */}
       <header className="px-6 py-6 flex items-center justify-between sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
         <div className="flex items-center gap-3">
@@ -47,16 +81,16 @@ export default function Dashboard() {
           <div>
             <h1 className="text-xl font-bold tracking-tight text-foreground">mymo</h1>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-[0.15em]">Piyasalar Açık</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-[0.15em]">Canlı Veri</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="h-10 px-4 rounded-2xl border-border/60 bg-white/50 hover:bg-white hover:border-primary/20 transition-all duration-300">
+          <Button variant="outline" size="sm" className="h-10 px-4 rounded-2xl border-border/60 bg-white/5 hover:bg-white/10 transition-all duration-300">
             <span className="text-xs font-semibold">AI Analiz</span>
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-2xl h-10 w-10 hover:bg-secondary">
+          <Button variant="ghost" size="icon" className="rounded-2xl h-10 w-10 hover:bg-white/5">
             <Eye className="h-5 w-5 text-muted-foreground" />
           </Button>
         </div>
@@ -64,7 +98,7 @@ export default function Dashboard() {
 
       <main className="px-6 py-10 space-y-10 max-w-lg mx-auto w-full">
         {/* Total Value Section */}
-        <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <section className="space-y-8 animate-in fade-in duration-700">
           <div className="space-y-4 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary/50 rounded-full border border-border/40 text-muted-foreground/80">
                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Toplam Varlık</span>
@@ -75,12 +109,12 @@ export default function Dashboard() {
               <span className="text-xl text-muted-foreground/60 font-medium uppercase">TL</span>
             </div>
             <div className="flex items-center justify-center gap-3">
-               <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-sm font-bold border border-emerald-100">
+               <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-bold border border-emerald-500/20">
                  <TrendingUp className="h-4 w-4" />
                  <span>23.695</span>
                  <span className="opacity-70 text-xs font-semibold">(%2,2)</span>
                </div>
-               <div className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-bold">Bugün</div>
+               <div className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-bold">Canlı</div>
             </div>
           </div>
 
@@ -97,10 +131,10 @@ export default function Dashboard() {
                   paddingAngle={6}
                   dataKey="value"
                   strokeWidth={0}
-                  animationBegin={200}
-                  animationDuration={1200}
+                  animationBegin={0}
+                  animationDuration={1000}
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : entry.color} />
                   ))}
                 </Pie>
@@ -170,12 +204,12 @@ export default function Dashboard() {
             <Button variant="ghost" size="sm" className="text-primary h-auto p-0 font-bold text-[11px] uppercase tracking-widest hover:bg-transparent hover:opacity-70">Hepsini Gör</Button>
           </div>
           <div className="grid gap-4">
-            {assets.map((asset, i) => (
+            {data.assets.map((asset: any, i: number) => (
               <motion.div 
                 key={asset.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.05 }}
                 whileTap={{ scale: 0.98 }}
                 className="bg-card border border-border/40 p-5 rounded-[2rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
               >
@@ -227,12 +261,12 @@ export default function Dashboard() {
              <div className="flex items-center justify-between">
                <div className="space-y-1">
                  <div className="font-bold text-[10px] uppercase tracking-[0.2em] text-muted-foreground">BIST 100 Endeksi</div>
-                 <div className="text-3xl font-black tracking-tighter">10.418,24</div>
+                 <div className="text-3xl font-black tracking-tighter">{data.marketSummary.index}</div>
                </div>
                <div className="flex flex-col items-end gap-2">
                  <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-lg shadow-emerald-500/20">
                    <TrendingUp className="h-3 w-3" />
-                   +%2,24
+                   {data.marketSummary.change}
                  </div>
                  <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Piyasa Açık</div>
                </div>
@@ -241,12 +275,12 @@ export default function Dashboard() {
         </Card>
 
         {/* News Section */}
-        <section className="space-y-6 pb-12">
+        <section className="space-y-6 pb-20">
           <div className="flex items-center justify-between px-2">
             <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Piyasa Haberleri</h3>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide px-2">
-            {news.map((item) => (
+            {data.news.map((item: any) => (
               <div key={item.id} className="min-w-[280px] bg-card border border-border/40 p-6 rounded-[2.5rem] space-y-3 hover:border-primary/20 transition-all duration-300 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">{item.category}</span>
