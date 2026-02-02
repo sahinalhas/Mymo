@@ -214,13 +214,9 @@ export default function Dashboard() {
             </div>
           </div>
         </section>
-      </main>
-    </div>
-  );
-}
 
         {/* Market Summary Card */}
-        <Card className="bg-primary/5 border-primary/10 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <Card className="bg-primary/5 border-primary/10 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow mt-10">
           <CardContent className="p-6">
              <div className="flex items-center justify-between">
                <div className="space-y-1">
@@ -228,7 +224,7 @@ export default function Dashboard() {
                  <div className="text-3xl font-black tracking-tighter">10.418,24</div>
                </div>
                <div className="flex flex-col items-end gap-2">
-                 <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-chart-2 text-chart-2-foreground text-[10px] font-black shadow-lg shadow-chart-2/20">
+                 <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-lg shadow-emerald-500/20">
                    <TrendingUp className="h-3 w-3" />
                    +%2,24
                  </div>
