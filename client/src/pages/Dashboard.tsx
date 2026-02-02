@@ -31,7 +31,7 @@ export default function Dashboard() {
           <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
             <Wallet className="text-primary-foreground h-6 w-6" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight">Paramla</h1>
+          <h1 className="text-xl font-bold tracking-tight">mymo</h1>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" className="rounded-full bg-secondary/50">
