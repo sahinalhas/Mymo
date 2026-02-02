@@ -20,7 +20,7 @@ export default function Dashboard() {
   const { data: assets, isLoading: assetsLoading } = useAssets();
   
   const { data: marketData, isLoading: marketLoading } = useQuery({
-    queryKey: ['/api/market-data?type=BIST'],
+    queryKey: ["/api/market-data?type=BIST"],
   });
 
   if (assetsLoading || marketLoading) {
