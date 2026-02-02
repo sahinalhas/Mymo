@@ -38,7 +38,7 @@ export default function MarketData() {
 
 function MarketList({ type }: { type: string }) {
   const { data: markets, isLoading } = useQuery<Market[]>({
-    queryKey: ['/api/market-data', { type }],
+    queryKey: [`/api/market-data?type=${type}`],
   });
 
   if (isLoading) {
