@@ -184,6 +184,24 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
+  // Predefined categories
+  const defaultCategories = [
+    { name: 'BIST Hisse', icon: '📈', color: 'bg-blue-500' },
+    { name: 'Yatırım Fonu', icon: '🏦', color: 'bg-indigo-500' },
+    { name: 'Kripto', icon: '₿', color: 'bg-orange-500' },
+    { name: 'Emtia & Altın', icon: '🟡', color: 'bg-amber-500' },
+  ];
+
+  // Seed categories on startup
+  (async () => {
+    const existing = await storage.getCategories();
+    if (existing.length === 0) {
+      for (const cat of defaultCategories) {
+        await storage.createCategory(cat);
+      }
+    }
+  })();
+
   // Available assets endpoints
   app.get("/api/available-assets/stock", async (req, res) => {
     try {
