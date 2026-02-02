@@ -36,19 +36,20 @@ export default function Dashboard() {
       <header className="px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-            <Wallet className="text-primary h-5 w-5" />
+            <Wallet className="h-5 w-5" />
           </div>
           <div>
             <h1 className="text-lg font-bold tracking-tight">mymo</h1>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
-              <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Live Market</span>
+              <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Piyasalar Açık</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-9 px-3 rounded-xl border-border/50 bg-secondary/30">
-            <span className="text-xs font-semibold">TL</span>
+          <Button variant="outline" size="sm" className="h-9 px-3 rounded-xl border-border/50 bg-secondary/30 relative group overflow-hidden">
+            <span className="text-xs font-semibold relative z-10">AI Analiz</span>
+            <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           </Button>
           <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 hover:bg-secondary/50">
             <Eye className="h-5 w-5 text-muted-foreground" />
@@ -113,6 +114,28 @@ export default function Dashboard() {
             </div>
           </div>
         </section>
+
+        {/* Summary Cards */}
+        <div className="grid grid-cols-2 gap-4">
+          <Card className="bg-card/40 border-border/50 rounded-[1.5rem] shadow-sm overflow-hidden group hover:border-primary/20 transition-all">
+            <CardContent className="p-4 flex flex-col items-center text-center gap-1">
+              <div className="w-10 h-10 rounded-xl bg-chart-2/10 flex items-center justify-center text-chart-2 mb-1">
+                <TrendingUp className="h-5 w-5" />
+              </div>
+              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Yıllık Temettü</div>
+              <div className="font-black text-lg">12.450 <span className="text-[10px] text-muted-foreground uppercase">TL</span></div>
+            </CardContent>
+          </Card>
+          <Card className="bg-card/40 border-border/50 rounded-[1.5rem] shadow-sm overflow-hidden group hover:border-primary/20 transition-all">
+            <CardContent className="p-4 flex flex-col items-center text-center gap-1">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-1">
+                <PieChart className="h-5 w-5" />
+              </div>
+              <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Portföy Skoru</div>
+              <div className="font-black text-lg">84 <span className="text-[10px] text-muted-foreground uppercase">/100</span></div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-4 gap-4">
