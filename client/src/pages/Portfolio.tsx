@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, TrendingUp, TrendingDown, Gem, Banknote, Landmark, Bitcoin } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { ChevronLeft, TrendingUp, TrendingDown, Gem, Banknote, Landmark, Bitcoin, PieChart as PieChartIcon } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 
@@ -15,50 +16,65 @@ const categories = [
 
 export default function Portfolio() {
   return (
-    <div className="flex flex-col min-h-screen soft-gradient noise pb-32">
-       <header className="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-4">
+    <div className="flex flex-col min-h-screen soft-gradient pb-32 font-sans">
+       <header className="px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
         <div className="flex items-center gap-4">
           <Link href="/">
-            <Button variant="ghost" size="icon" className="rounded-xl bg-secondary/50 h-10 w-10">
+            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-secondary/50 h-10 w-10">
               <ChevronLeft className="h-6 w-6" />
             </Button>
           </Link>
-          <h1 className="text-xl font-bold tracking-tight">Varlık Gruplarım</h1>
+          <h1 className="text-xl font-bold tracking-tight">Analiz ve Dağılım</h1>
         </div>
       </header>
 
-      <main className="px-6 space-y-4 max-w-md mx-auto w-full">
-        <section className="text-center py-6 space-y-2">
-           <div className="text-primary font-black text-3xl tracking-tight">
-             319.902 TL <span className="text-sm font-bold text-muted-foreground opacity-60">%42,7</span>
+      <main className="px-6 py-8 space-y-8 max-w-md mx-auto w-full">
+        <section className="text-center space-y-4">
+           <div className="space-y-1">
+             <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">En Büyük Pay</div>
+             <div className="text-primary font-black text-4xl tracking-tight">
+               319.902 <span className="text-lg font-semibold text-muted-foreground">TL</span>
+             </div>
            </div>
            <div className="flex items-center justify-center gap-2">
-             <div className="px-3 py-1 bg-destructive/10 text-destructive text-xs font-black rounded-full">- 23.726 %6,9</div>
-             <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">GÜNLÜK DEĞİŞİM</div>
+             <div className="px-3 py-1 bg-destructive/10 text-destructive text-[11px] font-bold rounded-lg flex items-center gap-1">
+               <TrendingDown className="h-3 w-3" />
+               23.726 (%6,9)
+             </div>
+             <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">GÜNLÜK</div>
            </div>
         </section>
 
+        {/* Portfolio Visualizer (Mini Chart) */}
+        <div className="flex h-3 w-full rounded-full bg-secondary/50 overflow-hidden shadow-inner">
+          <div className="h-full bg-purple-500 w-[40%]" />
+          <div className="h-full bg-amber-500 w-[30%]" />
+          <div className="h-full bg-blue-500 w-[20%]" />
+          <div className="h-full bg-green-500 w-[10%]" />
+        </div>
+
         <div className="grid gap-3">
+          <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground ml-1">Kategoriler</Label>
           {categories.map((cat, i) => (
             <motion.div 
               key={cat.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               whileTap={{ scale: 0.98 }}
-              className="glass p-5 rounded-[2rem] flex items-center justify-between group cursor-pointer border border-border/20"
+              className="bg-card border border-border/50 p-4 rounded-[1.25rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 transition-all shadow-sm"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-secondary/50 rounded-2xl flex items-center justify-center shadow-inner">
+                <div className="w-12 h-12 bg-secondary/30 rounded-xl flex items-center justify-center shadow-inner group-hover:bg-secondary/50 transition-colors">
                   {cat.icon}
                 </div>
-                <div>
-                  <div className="font-black text-sm uppercase tracking-tight group-hover:text-primary transition-colors">{cat.name}</div>
-                  <div className="text-xs font-bold text-muted-foreground">{cat.amount}</div>
+                <div className="space-y-0.5">
+                  <div className="font-bold text-sm tracking-tight group-hover:text-primary transition-colors">{cat.name}</div>
+                  <div className="text-[11px] font-semibold text-muted-foreground uppercase">{cat.amount}</div>
                 </div>
               </div>
               <div className="text-right">
-                <div className={`text-[10px] font-black px-2 py-0.5 rounded-full ${cat.isNegative ? 'bg-destructive/10 text-destructive' : 'bg-chart-2/10 text-chart-2'}`}>
+                <div className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${cat.isNegative ? 'bg-destructive/10 text-destructive' : 'bg-chart-2/10 text-chart-2'}`}>
                   {cat.change}
                 </div>
               </div>
@@ -67,10 +83,10 @@ export default function Portfolio() {
         </div>
       </main>
 
-      <div className="fixed bottom-10 left-6 right-6 flex items-center justify-center pointer-events-none">
-         <div className="bg-primary px-8 py-4 rounded-full shadow-2xl shadow-primary/40 pointer-events-auto flex items-center gap-3 active:scale-95 transition-transform cursor-pointer">
-           <Crown className="text-primary-foreground h-5 w-5" />
-           <span className="text-primary-foreground font-black text-sm uppercase tracking-wider">Premium Üyeliğe Geç</span>
+      <div className="fixed bottom-24 left-6 right-6 flex items-center justify-center pointer-events-none">
+         <div className="bg-primary px-8 py-4 rounded-2xl shadow-2xl shadow-primary/25 pointer-events-auto flex items-center gap-3 active:scale-95 transition-all cursor-pointer border border-white/10">
+           <Gem className="text-primary-foreground h-5 w-5" />
+           <span className="text-primary-foreground font-bold text-sm uppercase tracking-wider">Premium Özellikleri Aç</span>
          </div>
       </div>
     </div>
