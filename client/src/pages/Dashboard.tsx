@@ -24,131 +24,154 @@ const assets = [
 
 export default function Dashboard() {
   return (
-    <div className="flex flex-col min-h-screen soft-gradient noise pb-24">
+    <div className="flex flex-col min-h-screen soft-gradient pb-24 font-sans selection:bg-primary/20">
       {/* Header */}
-      <header className="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-4 backdrop-blur-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 bg-linear-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mymo-shadow">
-            <Wallet className="text-primary-foreground h-6 w-6" />
+      <header className="px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/50">
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+            <Wallet className="text-primary h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-xl font-black tracking-tighter leading-none">mymo</h1>
-            <span className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">Investment</span>
+            <h1 className="text-lg font-bold tracking-tight">mymo</h1>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
+              <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Live Market</span>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="rounded-full bg-secondary/50">
-            <span className="text-xs font-bold">TL</span>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-9 px-3 rounded-xl border-border/50 bg-secondary/30">
+            <span className="text-xs font-semibold">TL</span>
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full bg-secondary/50">
-            <Eye className="h-5 w-5" />
+          <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9 hover:bg-secondary/50">
+            <Eye className="h-5 w-5 text-muted-foreground" />
           </Button>
         </div>
       </header>
 
-      <main className="px-6 space-y-6 max-w-md mx-auto w-full">
+      <main className="px-6 py-8 space-y-8 max-w-md mx-auto w-full">
         {/* Total Value Section */}
-        <section className="text-center py-8 space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-secondary/50 rounded-full text-xs font-medium mb-2 border border-border/50">
-            PORTFÖY_1 <PieChart className="h-3 w-3" />
+        <section className="space-y-3">
+          <div className="flex items-center gap-2 text-muted-foreground">
+             <span className="text-xs font-bold uppercase tracking-widest">Toplam Varlık</span>
+             <PieChart className="h-3 w-3" />
           </div>
-          <h2 className="text-4xl font-black tracking-tight flex items-baseline justify-center gap-1">
-            1.070.320 <span className="text-xl text-muted-foreground font-medium uppercase">TL</span>
-          </h2>
-          <div className="flex items-center justify-center gap-3">
-             <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-destructive/10 text-destructive text-sm font-bold">
-               - 23.695 <span className="opacity-70 font-medium">%2,2</span>
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-4xl font-black tracking-tight">1.070.320</h2>
+            <span className="text-xl text-muted-foreground font-semibold uppercase">TL</span>
+          </div>
+          <div className="flex items-center gap-2">
+             <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-destructive/10 text-destructive text-sm font-bold">
+               <TrendingDown className="h-3.5 w-3.5" />
+               <span>23.695</span>
+               <span className="opacity-70 text-xs font-semibold">(%2,2)</span>
              </div>
-             <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Günlük Değişim</div>
+             <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Bugün</div>
           </div>
         </section>
 
-        {/* Portfolio Distribution Chart Placeholder */}
-        <div className="relative aspect-square max-w-[200px] mx-auto flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full border-[12px] border-primary/20"></div>
-          <div className="absolute inset-0 rounded-full border-[12px] border-primary border-r-transparent border-b-transparent transform -rotate-12 shadow-[0_0_15px_rgba(var(--primary),0.3)]"></div>
-          <div className="text-center space-y-1">
-            <Crown className="h-5 w-5 text-primary mx-auto" />
-            <div className="text-[10px] uppercase font-black text-primary tracking-tighter">Premium</div>
-          </div>
-          {/* Labels */}
-          <div className="absolute top-0 right-0 translate-x-12 text-[10px] font-bold">%0,04 <span className="text-muted-foreground">BIST</span></div>
-          <div className="absolute bottom-1/2 left-0 -translate-x-12 text-[10px] font-bold">Emtia <span className="text-primary">%100,0</span></div>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-4 gap-4">
+          {[
+            { icon: Plus, label: "Ekle", color: "bg-primary text-primary-foreground", href: "/add" },
+            { icon: ArrowRightLeft, label: "Takas", color: "bg-secondary text-foreground", href: "/transactions" },
+            { icon: PieChart, label: "Analiz", color: "bg-secondary text-foreground", href: "/portfolio" },
+            { icon: Crown, label: "Pro", color: "bg-secondary text-foreground", href: "/profile" },
+          ].map((action, i) => (
+            <Link key={i} href={action.href}>
+              <div className="flex flex-col items-center gap-2 cursor-pointer group">
+                <div className={`w-14 h-14 ${action.color} rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200 border border-white/10`}>
+                  <action.icon className="h-6 w-6" />
+                </div>
+                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{action.label}</span>
+              </div>
+            </Link>
+          ))}
         </div>
 
         {/* Assets List */}
         <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Varlıklarım</h3>
-            <Button variant="link" className="text-primary h-auto p-0 font-bold text-xs uppercase tracking-tighter">Tümünü Gör</Button>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Varlık Dağılımı</h3>
+            <Button variant="ghost" size="sm" className="text-primary h-auto p-0 font-bold text-[10px] uppercase tracking-wider hover:bg-transparent">Hepsini Gör</Button>
           </div>
-          <div className="space-y-3">
+          <div className="grid gap-3">
             {assets.map((asset) => (
               <motion.div 
                 key={asset.id}
                 whileTap={{ scale: 0.98 }}
-                className="glass p-4 rounded-2xl flex items-center justify-between group cursor-pointer"
+                className="bg-card border border-border/50 p-4 rounded-[1.25rem] flex items-center justify-between group cursor-pointer hover:border-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 shadow-sm"
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 ${asset.color} rounded-2xl flex items-center justify-center shadow-lg`}>
+                  <div className={`w-11 h-11 ${asset.color} rounded-xl flex items-center justify-center shadow-md border border-white/20`}>
                     <span className="text-white font-black text-xs">{asset.name.substring(0,2)}</span>
                   </div>
-                  <div>
-                    <div className="font-bold flex items-center gap-2 group-hover:text-primary transition-colors">
+                  <div className="space-y-0.5">
+                    <div className="font-bold text-sm tracking-tight group-hover:text-primary transition-colors">
                       {asset.name}
-                      <TrendingUp className="h-3 w-3 text-chart-2" />
                     </div>
-                    <div className="text-xs text-muted-foreground font-medium">{asset.desc}</div>
+                    <div className="text-[11px] text-muted-foreground font-semibold uppercase tracking-tight">{asset.desc}</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="font-bold tracking-tight">{asset.price}</div>
-                  <div className="text-[10px] font-black text-chart-2">{asset.change}</div>
+                <div className="text-right space-y-0.5">
+                  <div className="font-bold text-sm tracking-tight">{asset.price}</div>
+                  <div className="flex items-center justify-end gap-1 text-[10px] font-black text-chart-2">
+                    <TrendingUp className="h-2.5 w-2.5" />
+                    {asset.change}
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
         </section>
 
-        {/* Market Summary */}
-        <Card className="glass border-none overflow-hidden rounded-3xl">
+        {/* Market Summary Card */}
+        <Card className="bg-card border-border/50 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-0">
-             <div className="bg-primary/10 p-4 border-b border-primary/10 flex items-center justify-between">
-               <div className="font-black text-xs uppercase tracking-widest">BIST 100</div>
-               <div className="flex items-center gap-2">
-                 <span className="font-bold">10.418</span>
-                 <div className="flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-chart-2/20 text-chart-2 text-[10px] font-black">+%2,2</div>
+             <div className="bg-primary/5 p-5 flex items-center justify-between">
+               <div className="space-y-1">
+                 <div className="font-bold text-xs uppercase tracking-widest text-muted-foreground">BIST 100 Endeksi</div>
+                 <div className="text-2xl font-black tracking-tighter">10.418,24</div>
+               </div>
+               <div className="flex flex-col items-end gap-1">
+                 <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-chart-2/10 text-chart-2 text-[10px] font-black">
+                   <TrendingUp className="h-3 w-3" />
+                   +%2,24
+                 </div>
+                 <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Bugün</div>
                </div>
              </div>
           </CardContent>
         </Card>
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 p-4 pb-8 z-50 glass border-t border-border/50 flex items-center justify-between max-w-md mx-auto">
-        <Link href="/add">
-          <Button variant="ghost" size="icon" className="text-primary-foreground bg-primary rounded-2xl h-14 w-14 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
-            <Plus className="h-8 w-8" />
-          </Button>
-        </Link>
+      {/* Modern Bottom Navigation */}
+      <nav className="fixed bottom-6 left-6 right-6 p-2 z-50 bg-background/90 backdrop-blur-xl border border-border/50 rounded-full flex items-center justify-between max-w-md mx-auto shadow-2xl">
         <Link href="/">
-          <Button variant="ghost" size="icon" className="h-14 w-14 text-primary">
-            <PieChart className="h-7 w-7" />
+          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full text-primary bg-primary/10">
+            <PieChart className="h-6 w-6" />
           </Button>
         </Link>
         <Link href="/portfolio">
-          <Button variant="ghost" size="icon" className="h-14 w-14">
-            <Wallet className="h-7 w-7 text-muted-foreground" />
+          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-secondary/50">
+            <Wallet className="h-6 w-6 text-muted-foreground" />
           </Button>
         </Link>
+        <div className="relative -top-1">
+          <Link href="/add">
+            <Button size="icon" className="h-14 w-14 rounded-full shadow-lg shadow-primary/25 hover:scale-105 active:scale-95 transition-all">
+              <Plus className="h-8 w-8" />
+            </Button>
+          </Link>
+        </div>
         <Link href="/transactions">
-          <Button variant="ghost" size="icon" className="h-14 w-14">
-            <ArrowRightLeft className="h-7 w-7 text-muted-foreground" />
+          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-secondary/50">
+            <ArrowRightLeft className="h-6 w-6 text-muted-foreground" />
           </Button>
         </Link>
         <Link href="/profile">
-          <Button variant="ghost" size="icon" className="h-14 w-14">
-            <Menu className="h-7 w-7 text-muted-foreground" />
+          <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full hover:bg-secondary/50">
+            <Menu className="h-6 w-6 text-muted-foreground" />
           </Button>
         </Link>
       </nav>
