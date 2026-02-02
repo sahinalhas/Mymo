@@ -6,7 +6,7 @@ import {
   Wallet, 
   Plus, 
   TrendingUp, 
-  Menu 
+  ArrowRightLeft 
 } from "lucide-react";
 
 export default function BottomNav() {
@@ -17,7 +17,7 @@ export default function BottomNav() {
     { href: "/portfolio", icon: Wallet, label: "Portföy" },
     { href: "/add", icon: Plus, label: "Ekle", isCenter: true },
     { href: "/markets", icon: TrendingUp, label: "Piyasalar" },
-    { href: "/profile", icon: Menu, label: "Profil" },
+    { href: "/transactions", icon: ArrowRightLeft, label: "İşlemler" },
   ];
 
   return (
